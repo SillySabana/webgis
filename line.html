@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <title>Intern GIS Project Line</title>
+      <link rel="stylesheet" href="https://openlayers.org/en/v4.3.3/css/ol.css" type="text/css">
+      <link rel="stylesheet" href="applications/main/css/main.css" />
+  	  <link rel="stylesheet" href="external/ol/css/ol.css" />
+  	  <link rel="stylesheet" href="applications/mouselocation/css/mouselocation.css" />
+      <link rel="stylesheet" href="external/bootstrap-4.0.0-alpha.6-dist/css/bootstrap.min.css">
+      <script type="text/javascript" src="external/ol/js/ol.js"></script>
+      <script type="text/javascript" src="external/jquery/js/jquery.js"></script>
+
+  </head>
+  <body>
+    <h3><strong> <center>Map to Find out the lines of the transmeter </center></strong>  </h3>
+      <div class="row">
+        <div class="col-sm-3">
+          
+            <a href="index.htm"><button>Count Point</button></a>
+            <a href="hotspots.html"><button>Hotspot Map</button></a>
+
+          <form name="form" action="">
+            <div class="form-group">
+                <label for="sel1"><strong>Line_Data</strong></label>
+              <select class="form-control" onchange="Select()" name="line_data" id="line_data">
+               <option value="">None</option>
+               <option value="line">Line</option>
+               <option value="pole">Pole</option>
+               <option value="ltline">LT Line</option>
+               <option value="transformer">Transformer</option>
+              </select>
+              <br>
+              <br>
+             <input type="button" class="btn btn-success" onClick="save()" value="Show">
+            </div>
+          </form>
+        </div>
+          
+        <div id="map" class="col-sm-9 map">
+           <div id="mouseLocation"> Lat: 0, Lon: 0 </div>
+        </div>
+    </div>
+ 
+    
+
+<!--function starts.................. -->
+
+  <script language="javascript" type="text/javascript"> 
+    function save(){ 
+      if(document.form.line_data.value=='line'){
+         map.removeLayer(pole);
+         map.removeLayer(LTline);
+         map.removeLayer(transformer);
+         map.addLayer(line);
+        
+      }
+      else if(document.form.line_data.value=='pole') {
+         map.removeLayer(line);
+         map.removeLayer(LTline);
+         map.removeLayer(transformer);
+         map.addLayer(pole);
+      }
+      else if(document.form.line_data.value=='ltline') {
+         map.removeLayer(line);
+         map.removeLayer(pole);
+         map.removeLayer(transformer);
+         map.addLayer(LTline);
+      }
+      else if(document.form.line_data.value=='transformer') {
+         map.removeLayer(line);
+         map.removeLayer(LTline);
+         map.removeLayer(pole);
+         map.addLayer(transformer);
+      }
+      else{
+          map.removeLayer(line);
+         map.removeLayer(LTline);
+         map.removeLayer(pole);
+         map.removeLayer(transformer);
+      }
+     
+    } 
+    
+  </script> 
+    <script type="text/javascript" src="applications/maplayers/js/maplayers.js"></script>
+    <script type="text/javascript" src="applications/main/js/main.js"></script>
+    <script type="text/javascript" src="external/jquery/js/jquery.js"></script>
+    <script type="text/javascript" src="applications/mouselocation/js/mouselocation.js"></script>
+    
+  </body>
+</html>

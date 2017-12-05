@@ -1,0 +1,120 @@
+<html>
+  <head>
+    <title> GIS Application</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="hotspot/main/css/main.css" />
+    <link rel="stylesheet" href="external/ol/css/ol.css" />
+    <link rel="stylesheet" href="hotspot/mouselocation/css/mouselocation.css" />
+    <link rel="stylesheet" href="external/bootstrap-4.0.0-alpha.6-dist/css/bootstrap.min.css">
+    <script type="text/javascript" src="external/ol/js/ol.js"></script>
+
+  </head>
+
+  <body>
+    <h3><strong> <center>HotSpot map </center> </strong></h3>
+    <div class="row">
+      <div class="col-sm-3">
+         <a href="line.html"><button>line</button></a>
+         <a href="index.htm"><button>Point Map</button></a> 
+
+        <form name="myform" action="">
+          <div class="form-group">
+            <label for="sel1"><strong>Point_Data</strong></label>
+            <select class="form-control" onchange="Select()" name="point_data" id="point_data">
+             <option value="">None</option>
+             <option value="chitwan">Chitwan</option>
+             <option value="dev_reg">Development Region</option>
+             <option value="dang">Dang</option>
+            </select>
+              <label for="sel1"><strong>Line_Data</strong></label>
+            <select class="form-control" onchange="Select()" name="line_data" id="line_data">
+             <option value="">None</option>
+             <option value="line">Line</option>
+             <option value="pole">Pole</option>
+             <option value="LTlines">LTlines</option>
+             <option value="transfomer">Transformer</option>
+            </select>
+            <br>
+            <br>
+            <input type="button" class="btn btn-success" onClick="save()" value="Point Saving">
+            <input type="button" class="btn btn-success" onClick="saveline()" value="Line Saving">
+          </div>
+        </form>
+      </div>
+        
+      <div id="map" class="col-sm-9 map">
+         <div id="mouseLocation"> Lat: 0, Lon: 0 </div>
+      </div>
+    </div>
+
+  // function starts..................
+
+  <script language="javascript" type="text/javascript">
+    
+    function save(){ 
+      if(document.myform.point_data.value=='dev_reg'){
+         map.removeLayer(chitwan);
+         map.removeLayer(dang);
+         map.addLayer(developmentregions);
+      	// developmentregion.setMap(map);
+      }
+      else if(document.myform.point_data.value=='chitwan') {
+      	map.removeLayer(developmentregions);
+        map.removeLayer(dang);
+        map.addLayer(chitwan);
+      	// chitwan.setMap(map);
+      }
+      else{
+        map.removeLayer(developmentregions);
+        map.removeLayer(dang);
+        map.removeLayer(chitwan);
+      }
+
+    }
+  </script>
+
+  <script language="javascript" type="text/javascript">  
+    function saveline(){ 
+      if(document.form.line_data.value=='line'){
+         map.removeLayer(pole);
+         map.removeLayer(LTlines);
+         map.removeLayer(transformer);
+         map.addLayer(line);
+        
+      }
+      else if(document.form.line_data.value=='pole') {
+         map.removeLayer(line);
+         map.removeLayer(LTlines);
+         map.removeLayer(transformer);
+         map.addLayer(pole);
+      }
+      else if(document.form.line_data.value=='ltline') {
+         map.removeLayer(line);
+         map.removeLayer(pole);
+         map.removeLayer(transformer);
+         map.addLayer(LTlines);
+      }
+      else if(document.form.line_data.value=='transformer') {
+         map.removeLayer(line);
+         map.removeLayer(LTlines);
+         map.removeLayer(pole);
+         map.addLayer(transformer);
+      }
+      else{
+          map.removeLayer(line);
+         map.removeLayer(LTlines);
+         map.removeLayer(pole);
+         map.removeLayer(transformer);
+      } 
+    } 
+      
+  </script> 
+
+    <script type="text/javascript" src="hotspot/maplayers/js/maplayers.js"></script>
+    <script type="text/javascript" src="hotspot/main/js/main.js"></script>
+    <script type="text/javascript" src="external/jquery/js/jquery.js"></script>
+    <script type="text/javascript" src="hotspot/mouselocation/js/mouselocation.js"></script>
+
+  </body>
+</html>
