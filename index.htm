@@ -1,0 +1,175 @@
+<html>
+	<head>
+		<title> GIS Application</title>
+		<link rel="stylesheet" href="application/main/css/main.css" />
+		<link rel="stylesheet" href="external/ol/css/ol.css" />
+		<link rel="stylesheet" href="application/mouselocation/css/mouselocation.css" />
+		<link rel="stylesheet" href="external/bootstrap-4.0.0-alpha.6-dist/css/bootstrap.min.css">
+		<link rel="stylesheet" href="external/ol/css/ol.css" type="text/css">
+    	
+
+    	<script type="text/javascript" src="external/ol/js/ol.js"></script>
+	    <script src="external/ol/js/turf.min.js"></script>
+	    <script src="application/maplayers/js/chitwan.geojson"></script>
+	    <script type="text/javascript" src="external/jquery/js/jquery.js"></script>
+   
+		
+	</head>
+	<body>
+	<div class="container">
+		<h3><strong><center> Map to count point inside the Geometry type </center></strong></h3>
+	</div>
+
+		<a href="line.html"><button>line</button></a>
+		<a href="hotspots.html"><button>Hotspot Map</button></a>
+			
+
+	<div class="row">
+		<div class="row col-sm-3">
+		  	<form name="myform" class="form-inline" action="">
+				<div class="form-group">
+			  		<select class="form-control" onchange="Select()" name="point_data" id="point_data">
+			   			<option value="">None</option>
+					    <option value="chitwan">Chitwan</option>
+					    <option value="dev_reg">Development Region</option>
+					    <option value="dang">Dang</option>
+			  		</select>
+			  		<input type="button" class="btn btn-success" onClick="save()" value="Show">
+			  	</div>
+		  	</form>
+			
+			<div>  
+				<button class="btn btn-primary" id="drawtoggle" data-toggle="false" type="button">
+			  		Activate/Desactivate drawing
+				</button>
+			</div>
+		</div>
+
+		<div id="map" class="col-sm-9 map">
+           <div id="mouseLocation"> Lat: 0, Lon: 0 </div>
+        </div>
+
+
+	</div>
+	
+
+	<!--function starts.................. -->
+	
+	<script language="javascript" type="text/javascript">
+		function save(){ 
+			if(document.myform.point_data.value=='dev_reg'){
+			   map.removeLayer(chitwan);
+			   map.removeLayer(dang);
+			   map.addLayer(developmentregions);
+				// developmentregion.setMap(map);
+			}
+			else if(document.myform.point_data.value=='chitwan') {
+				map.removeLayer(developmentregions);
+			  map.removeLayer(dang);
+			  map.addLayer(chitwan);
+				// chitwan.setMap(map);
+			}
+			else if(document.myform.point_data.value=='dang') {
+				map.removeLayer(developmentregions);
+			  map.removeLayer(chitwan);
+			  map.addLayer(dang);
+				// chitwan.setMap(map);
+			}
+			else{
+			  map.removeLayer(developmentregions);
+			  map.removeLayer(dang);
+			  map.removeLayer(chitwan);
+			}
+		} 
+	</script>
+
+	<script type="text/javascript">
+
+
+	  // Create a style function for coloring points
+	  var pointStyles = (function() {
+	    var defaultStyle = [
+	      new ol.style.Style({
+	        image: new ol.style.Circle({
+	          stroke: new ol.style.Stroke({
+	            color: 'brown'
+	          }),
+	          fill: new ol.style.Fill({
+	            color: '#107265'
+	          }),
+	          radius: 4
+	        })
+	      })
+	    ];
+	    var ruleStyle = [new ol.style.Style({
+	      image: new ol.style.Circle({
+	        stroke: new ol.style.Stroke({
+	          color: 'white'
+	        }),
+	        fill: new ol.style.Fill({
+	          color: 'red'
+	        }),
+	        radius: 5
+	      })
+	    })];
+	    return function(feature, resolution) {
+	      var isInside = feature.get('isInside');
+	      if (isInside != undefined && isInside === true) {
+	        return ruleStyle;
+	      } else {
+	        return defaultStyle;
+	      }
+	    };
+	  })();
+
+	  // Create a button and bind a click function
+	  var button = document.getElementById('drawtoggle');
+	  var draw;
+	  button.addEventListener('click', function(e) {
+	    var toggleState = this.getAttribute('data-toggle');
+	    if (toggleState === 'true') {
+	      this.setAttribute('data-toggle', 'false');
+	      this.setAttribute('class', 'btn btn-primary');
+	      map.removeInteraction(draw);
+	    } else {
+	      this.setAttribute('data-toggle', 'true');
+	      this.setAttribute('class', 'btn btn-info active');
+	      // Assign draw interaction (variable created before for scope reason)
+	      draw = new ol.interaction.Draw({
+	        source: vectorSourceDrawing,
+	        type: 'Polygon'
+	      });
+
+	      // Bind event on the draw component
+	      draw.on('drawend', function(e) {
+	        // Remove immediately other features for demo purpose
+	        vectorSourceDrawing.clear();
+	        var formatDraw = new ol.format.GeoJSON();
+	        var featureDraw = formatDraw.writeFeature(e.feature, {
+	          featureProjection: 'EPSG:4326'
+	        });
+
+	        // Loop on features
+	        vectorSource.getFeatures().forEach(function(el) {
+	          var feat = formatDraw.writeFeature(el, {
+	            featureProjection: 'EPSG:4326'
+	          });
+	          // Below function can be replaced with ol.extent.intersects
+	          // if drawing a bounding box
+	          var isInside = turf.inside(JSON.parse(feat), JSON.parse(featureDraw));
+	          el.set('isInside', isInside);
+	        });
+	      });
+	      // Add the interaction to the map
+	      map.addInteraction(draw);
+	    }
+	  });
+	</script>
+
+	<script type="text/javascript" src="application/maplayers/js/maplayers.js"></script>
+	<script type="text/javascript" src="application/main/js/main.js"></script>
+	<script type="text/javascript" src="application/mouselocation/js/mouselocation.js"></script>
+
+
+	</body>
+</html>
